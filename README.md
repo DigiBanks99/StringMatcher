@@ -7,7 +7,7 @@ Download and install [.NET Core 2.0](https://www.microsoft.com/net/learn/get-sta
 ### Compiling
 You will need to run the provided build script.
 ```
-.\build.ps1
+.\StringMatcher\build.ps1
 ```
 Or you can do it by hand from a terminal (PowerShell on Windows).
 ```
@@ -16,5 +16,5 @@ dotnet build
 ### Running
 You may run the project from your terminal.
 ```
-.\run.ps1
+.\StringMatcher\run.ps1
 ```
