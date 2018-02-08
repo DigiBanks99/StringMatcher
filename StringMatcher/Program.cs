@@ -19,30 +19,23 @@ namespace StringMatcher
     {
       try
       {
-        if (args == null || !args.Any())
-        {
-          Console.WriteLine(GetHelp());
-          return;
-        }
+        Console.WriteLine(GetHelp());
 
-        if (args.Length < 2)
-        {
-          WriteError("You did not provide the required amount of arguments.");
-          Console.WriteLine(Environment.NewLine);
-          Console.WriteLine(GetHelp());
-          return;
-        }
+        Console.Write("Please provide the search string:\t");
+        var searchLine = Console.ReadLine();
+        Console.Write("Please provide the file path:\t\t");
+        var filePath = Console.ReadLine();
 
-        var fileInfo = new FileInfo(args[1]);
+        var fileInfo = new FileInfo(filePath);
         if (!fileInfo.Exists)
         {
-          WriteError($"The file {fileInfo.FullName} cannot be found. Please ensure it exists and that you have specified the correct path.");
+          WriteError($"The file {fileInfo.FullName} cannot be found. Please ensure it exists and that you have specified the correct path.{Environment.NewLine}");
           return;
         }
 
-        if (!_regexAlphaNum.IsMatch(args[0]))
+        if (!_regexAlphaNum.IsMatch(searchLine))
         {
-          WriteError($"The input string {args[0]} is not alphanumeric.");
+          WriteError($"The input string {searchLine} is not alphanumeric.{Environment.NewLine}");
           return;
         }
 
@@ -52,23 +45,23 @@ namespace StringMatcher
           var text = streamReader.ReadToEnd();
           if (string.IsNullOrEmpty(text))
           {
-            WriteError("No match found. File does not contain any text.");
+            WriteError($"No match found. File does not contain any text.{Environment.NewLine}");
             return;
           }
 
           var lines = text.Split(Environment.NewLine);
           if (lines == null || !lines.Any())
           {
-            WriteError("No match found. File only contains whitespace.");
+            WriteError($"No match found. File only contains whitespace.{Environment.NewLine}");
             return;
           }
 
-          var inputCharList = args[0].ToCharArray().ToList();
+          var inputCharList = searchLine.ToCharArray().ToList();
           inputCharList.Sort();
 
           int initialLineLength = lines.First().Length;
           if (inputCharList.Count != initialLineLength)
-            WriteError("Your input string is not necessarily the same length as all the lines in your file.");
+            WriteError($"Your input string is not necessarily the same length as all the lines in your file.{Environment.NewLine}");
 
           bool fileLengthFlagged = false;
           var sb = new StringBuilder();
@@ -76,12 +69,12 @@ namespace StringMatcher
           {
             if (!fileLengthFlagged && line.Length != initialLineLength)
             {
-              WriteError("Not all the lines in your file have the same length.");
+              WriteError($"Not all the lines in your file have the same length.{Environment.NewLine}");
               fileLengthFlagged = true;
             }
 
             if (!_regexAlphaNum.IsMatch(line))
-              WriteError($"The line {line} in {fileInfo.FullName} is not alphanumeric.");
+              WriteError($"The line {line} in {fileInfo.FullName} is not alphanumeric.{Environment.NewLine}");
 
             var lineCharList = line.ToCharArray().ToList();
             lineCharList.Sort();
@@ -126,10 +119,6 @@ namespace StringMatcher
 
       sb.AppendLine("Takes a string and a file path as an input and checks if the file contains a string equivalent to the input.");
       sb.AppendLine("A file is said to contain an equivalent string if a string exists within the file for which all the characters are also present in the input string.");
-      sb.Append(Environment.NewLine);
-      sb.AppendLine("Usage:\t\tStringMatcher yourstring filepath");
-      sb.Append(Environment.NewLine);
-      sb.AppendLine("Example:\tStringMatcher ABCDEF C:\\Temp\\MyFile.txt");
 
       return sb.ToString();
     }
